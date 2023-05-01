@@ -1,3 +1,4 @@
+
 get_weather_forcasting<- function(city_name){
   df<-data.frame()
   for (city_name in city_name){
@@ -24,7 +25,7 @@ get_weather_forcasting<- function(city_name){
       season <- c(season,results$main$season)
      
     }
-                        df <- data.frame(
+                        df <- c(
                                      city=city,
                                      weather=weather, 
                                      visibility=visibility, 
@@ -45,3 +46,5 @@ get_weather_forcasting<- function(city_name){
 
 cities = c ('Seoul',"Washington, D.C.", "Paris", "Suzhou")
 get_weather_forcasting(cities)
+cities_weather_df<-get_weather_forcasting(cities)
+forecasting_csv<- write.csv(cities_weather_df,'cities_weather_df',row.names = FALSE)
