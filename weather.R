@@ -6,7 +6,7 @@ get_weather_forcasting<- function(city_name){
     forecast_quer <- list(q = city_name, appid = '0999031957056343b00afa47c6adec5a', units= 'metric')
     response<- GET(forecast_url,query= forecast_quer)
     jsonresult<- content(response, as='parsed')
-    results<-jsonresult
+    results<-jsonresult$list
   
     for(result in results){
       city <- c(city, city_name)
