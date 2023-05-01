@@ -1,4 +1,3 @@
-
 get_weather_forcasting<- function(city_name){
   df<-data.frame()
   for (city_name in city_name){
@@ -7,6 +6,7 @@ get_weather_forcasting<- function(city_name){
     response<- GET(forecast_url,query= forecast_quer)
     jsonresult<- content(response, as='parsed')
     results<-jsonresult$list
+    
   
     for(result in results){
       city <- c(city, city_name)
@@ -17,15 +17,13 @@ get_weather_forcasting<- function(city_name){
       temp_max <- c(temp_max,results$main$temp_max)
       pressure <- c(pressure,results$main$pressure)
       humidity <- c(humidity,results$main$humidity)
-      wind_speed <- c(wind_speed,results$main$wind_speed)
-      wind_deg <- c(wind_deg,results$main$wind_deg)
-      forecast_datetime <- c(forecast_datetime,results$forecast_datetime)
-      # Season column
-      # Note that for season, you can hard code a season value from levels Spring, Summer, Autumn, and Winter based on your current month.
-      season <- c(season,results$main$season)
+      wind_speed <- c(wind_speed,results$wind$speed)
+      wind_deg <- c(wind_deg,results$wind$deg)
+      forecast_datetime <- c(forecast_datetime, result$dt_txt)
+      season <- c(season, "Spring")
      
     }
-                        df <- c(
+        df <- c(
                                      city=city,
                                      weather=weather, 
                                      visibility=visibility, 
