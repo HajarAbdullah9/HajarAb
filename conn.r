@@ -1,6 +1,7 @@
 install.packages("RSQLite")
 library("RSQLite")
 library(RODBC);
+library(odbc)
 dsn_driver <- "{IBM DB2 ODBC Driver}"
 dsn_database <- "bludb"            # e.g. "bludb"
 dsn_hostname <- "fbd88901-ebdb-4a4f-a32e-9822b9fb237b.c1ogj3sd0tgtu0lqde00.databases.appdomain.cloud" # e.g "54a2f15b-5c0f-46df-8954-.databases.appdomain.cloud"
@@ -9,17 +10,24 @@ dsn_protocol <- "TCPIP"            # i.e. "TCPIP"
 dsn_uid <- "jtm62400"        # e.g. "zjh17769"
 dsn_pwd <- "fDYVCgshF7cbMaCE"      # e.g. "zcwd4+8gbq9bm5k4"  
 dsn_security <- "ssl"
-conn_path <- paste("DRIVER=",dsn_driver,
-                  ";DATABASE=",dsn_database,
-                  ";HOSTNAME=",dsn_hostname,
-                  ";PORT=",dsn_port,
-                  ";PROTOCOL=",dsn_protocol,
-                  ";UID=",dsn_uid,
-                  ";PWD=",dsn_pwd,
-                  ";SECURITY=",dsn_security,        
-                    sep="")
-conn <- odbcDriverConnect(conn_path, believeNRows=FALSE)
-conn
+
+conn_string <- paste0("Driver={", dsn_driver, "};",
+
+                      "DATABASE=", dsn_database, ";",
+
+                      "HOSTNAME=", dsn_hostname, ";",
+
+                      "PORT=", dsn_port, ";",
+
+                      "PROTOCOL=", dsn_protocol, ";",
+
+                      "UID=", dsn_uid, ";",
+
+                      "PWD=", dsn_pwd, ";",
+
+                      "SECURITY=", dsn_security)
+
+conn <- odbcConnect(conn_string, uid = dsn_uid, pwd = dsn_pwd)
 
 
 sql.info <- sqlTypeInfo(conn)
