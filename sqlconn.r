@@ -21,10 +21,6 @@ conn <- odbcDriverConnect(paste0("DRIVER=", dsn_driver,
                                  ";PWD=", dsn_pwd,
                                  ";SECURITY=", dsn_security))
 
-
-
-
-
 conn
 sql.info <- sqlTypeInfo(conn)
 conn.info <- odbcGetInfo(conn)
@@ -117,3 +113,20 @@ if(df2 == -1){
     } else {
     cat ("Table was createdd successfuly.\n")
 }
+
+# read and appendit to the tables in IBM cloud:
+
+#1 
+anual_cropdf <- read.csv("resources/SQL/data1.csv")
+sqlSave(conn, anual_cropdf, 'ANNUAL_CROP', append=TRUE, fast=FALSE, rownames=FALSE, colnames=FALSE, verbose=FALSE)
+#2
+farm_pricesdf <- read.csv('resources/SQL/datatwo.csv')
+sqlSave(conn, farm_pricesdf,'FARM_PRICES', append=TRUE, fast=FALSE, rownames=FALSE, colnames=FALSE, verbose=FALSE)
+#3
+monthly_pricesdf <- read.csv("resources/SQL/data5.csv")
+sqlSave(conn, monthly_pricesdf,"MONTHLY", append=TRUE, fast=FALSE, rownames=FALSE, colnames=FALSE, verbose=FALSE)
+#4
+daily_pricesdf <- read.csv("resources/SQL/data4.csv")
+sqlSave(conn, daily_pricesdf,"DAILY_PRICES", append=TRUE, fast=FALSE, rownames=FALSE, colnames=FALSE, verbose=FALSE)
+
+
