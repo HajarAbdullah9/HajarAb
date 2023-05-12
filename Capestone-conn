@@ -1,26 +1,56 @@
-# Establish database connection
-library(odbc)
-
 library(RODBC)
 library(odbc)
-
-dsn_driver <- '{IBM DB2 ODBC Driver}'
-dsn_database <- "bludb"            # e.g. "bludb"
-dsn_hostname <- "fbd88901-ebdb-4a4f-a32e-9822b9fb237b.c1ogj3sd0tgtu0lqde00.databases.appdomain.cloud" # e.g "54a2f15b-5c0f-46df-8954-.databases.appdomain.cloud"
-dsn_port <- "32731"   # e.g. "32733" 
-dsn_protocol <- "TCPIP"            # i.e. "TCPIP"
-dsn_uid <- "jtm62400"        # e.g. "zjh17769"
-dsn_pwd <- "YkFjcy5blnjjNQnf"      # e.g. "zcwd4+8gbq9bm5k4"  
+dsn_driver <- "{IBM DB2 ODBC Driver}"
+dsn_database <- "bludb"
+dsn_hostname <- "b0aebb68-94fa-46ec-a1fc-1c999edb6187.c3n41cmd0nqnrk39u98g.databases.appdomain.cloud"
+dsn_port <- "31249"
+dsn_protocol <- "TCPIP"
+dsn_uid <- "gjb11938"
+dsn_pwd <- "v1Q7dBZHJea3aNMf"
 dsn_security <- "ssl"
 
-conn_path <- paste("DRIVER=",dsn_driver,
-                  ";DATABASE=",dsn_database,
-                  ";HOSTNAME=",dsn_hostname,
-                  ";PORT=",dsn_port,
-                  ";PROTOCOL=",dsn_protocol,
-                  ";UID=",dsn_uid,
-                  ";PWD=",dsn_pwd,
-                  ";SECURITY=",dsn_security,        
-                    sep="")
-conn <- odbcDriverConnect(conn_path, believeNRows=FALSE)
+conn <- odbcDriverConnect(paste0("DRIVER=", dsn_driver,
+                                 ";DATABASE=", dsn_database,
+                                 ";HOSTNAME=", dsn_hostname,
+                                 ";PORT=", dsn_port,
+                                 ";PROTOCOL=", dsn_protocol,
+                                 ";UID=", dsn_uid,
+                                 ";PWD=", dsn_pwd,
+                                 ";SECURITY=", dsn_security))
+
 conn
+sql.info <- sqlTypeInfo(conn)
+conn.info <- odbcGetInfo(conn)
+conn.info["DBMS_Name"]
+conn.info["DBMS_Ver"]
+conn.info["Driver_ODBC_Ver"]
+
+WETHER_FORECAST<- read.csv('C:/Users/LENOVO/Desktop/slides/SQLDATA/cities_weather_forecast (2).csv')
+str(WETHER_FORECAST)
+
+DF1 <- sqlQuery (conn, "CREATE TABLE cityWeather(CITY chr (6) NOT NULL,
+                    WEATHER chr (20),
+                    VISIBILITY int NOT NULL,
+                    TEMP num (20),
+                    TEMP_MIN num (50),
+                    TEMP_MAX num (50),
+                    PRESSURE int NOT NULL,
+                    HUMIDITY int NOT NULL,
+                    WIND_SPEED num (50),
+                    WIND_DEG int NOT NULL,
+                     SEASON chr (20),
+                     HOLIDAY chr (20),
+                     FORECAST_DATETIME CHAR (20),
+                    PRIMARY KEY (CITY))",
+                   errors = FALSE)
+
+if(DF1 == -1){
+  cat ("An error has occured.\n")
+  msg <- odbcGetErrMsg(conn)
+  print (msg)
+} else {
+  cat ("Table was createdd successfuly.\n")
+}
+
+sqlSave(conn,WETHER_FORECAST,'WEATHER',append=TRUE, fast=FALSE, rownames=FALSE, colnames=FALSE, verbose=FALSE)
+
