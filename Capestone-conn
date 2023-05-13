@@ -2,11 +2,11 @@ library(RODBC)
 library(odbc)
 dsn_driver <- "{IBM DB2 ODBC Driver}"
 dsn_database <- "bludb"
-dsn_hostname <- "b0aebb68-94fa-46ec-a1fc-1c999edb6187.c3n41cmd0nqnrk39u98g.databases.appdomain.cloud"
-dsn_port <- "31249"
+dsn_hostname <- "19af6446-6171-4641-8aba-9dcff8e1b6ff.c1ogj3sd0tgtu0lqde00.databases.appdomain.cloud"
+dsn_port <- "30699"
 dsn_protocol <- "TCPIP"
-dsn_uid <- "gjb11938"
-dsn_pwd <- "v1Q7dBZHJea3aNMf"
+dsn_uid <- "thm70136"
+dsn_pwd <- "3q66wVzVDxeAZ1L1"
 dsn_security <- "ssl"
 
 conn <- odbcDriverConnect(paste0("DRIVER=", dsn_driver,
@@ -25,29 +25,21 @@ conn.info["DBMS_Name"]
 conn.info["DBMS_Ver"]
 conn.info["Driver_ODBC_Ver"]
 
-
-#city_weather
-
-WEATHER_FORECAST<- read.csv('C:/Users/LENOVO/Desktop/slides/SQLDATA/cities_weather_forecast (2).csv')
-str(WEATHER_FORECAST)
-dim(WEATHER_FORECAST)
-View(WEATHER_FORECAST)
-DF1 <- sqlQuery (conn, "CREATE TABLE cityWether(CITY char (6) NOT NULL, WEATHER char (20),
-                    VISIBILITY int,
-                    TEMP num ,
+Cities_weather
+table1<- sqlQuery (conn, "CREATE TABLE weather3(CITY char (16) NOT NULL, WEATHER char (20),
+                    VISIBILITY int (20),
+                    TEMP num (20),
                     TEMP_MIN num (20),
                     TEMP_MAX num (20),
-                    PRESSURE int,
-                    HUMIDITY int,
+                    PRESSURE int (20),
+                    HUMIDITY int (20),
                     WIND_SPEED num (20),
-                    WIND_DEG int,
+                    WIND_DEG int (20),
                      SEASON char (20),
                      FORECAST_DATETIME CHAR (20),
                     PRIMARY KEY (CITY)
-              
-                    
                    )",
-                   errors = FALSE)
+                 errors = FALSE)
 
 if(DF1 == -1){
   cat ("An error has occured.\n")
@@ -57,8 +49,13 @@ if(DF1 == -1){
   cat ("Table was createdd successfuly.\n")
 }
 
+WEATHER_FORECAST<- read.csv('C:/Users/LENOVO/Desktop/slides/SQLDATA/cities_weather_forecast (2).csv')
+dim(WEATHER_FORECAST)
+sqlSave(conn,WEATHER_FORECAST, 'WEATHER3',append=TRUE, fast=FALSE, rownames=FALSE, colnames=FALSE, verbose=FALSE)
 
-sqlSave(conn,WEATHER_FORECAST,'cityWether',append=TRUE, fast=FALSE, rownames=FALSE, colnames=FALSE, verbose=FALSE)
+
+
+#Bike_sharing_systems
 
 # bike_sharing_systems:
 
@@ -67,7 +64,7 @@ str(bike_sharing_systems)
 dim(bike_sharing_systems)
 View(bike_sharing_systems)
 
-DF2 <- sqlQuery (conn, "CREATE TABLE sharingSystems(COUNTRY char (6), CITY char (20) NOT NULL,
+DF2 <- sqlQuery (conn, "CREATE TABLE sharingSystems(COUNTRY char (20), CITY char (20) NOT NULL,
                     SYSTEM char (20),
                     BICYCLES int,
                     PRIMARY KEY (CITY)
@@ -84,6 +81,7 @@ if(DF2 == -1){
 
 sqlSave(conn,bike_sharing_systems,'sharingSystems',append=TRUE, fast=FALSE, rownames=FALSE, colnames=FALSE, verbose=FALSE)
 
+
 #3rd seoul_bike_sharing (2)
 
 seoul_bike_sharing<- read.csv('C:/Users/LENOVO/Desktop/slides/SQLDATA/seoul_bike_sharing (2).csv')
@@ -91,7 +89,7 @@ str(seoul_bike_sharing)
 dim(seoul_bike_sharing)
 View(seoul_bike_sharing)
 
-DF3 <- sqlQuery (conn, "CREATE TABLE SEOULSHARING (DATE varchar (6), RENTED_BIKE_COUNT int,
+DF3 <- sqlQuery (conn, "CREATE TABLE seoul1(DATE varchar (16), RENTED_BIKE_COUNT int,
                     HOUR int,
                     TEMPERATURE num (20),
                     HUMIDITY int,
@@ -101,10 +99,9 @@ DF3 <- sqlQuery (conn, "CREATE TABLE SEOULSHARING (DATE varchar (6), RENTED_BIKE
                     SOLAR_RADIATION num (20),
                     RAINFALL num (20),
                     SNOWFALL num (20),
-                    SEASONS char (6),
-                    HOLIDAY char (6),
-                    FUNCTIONING_DAY char (20) NOT NULL,
-                    PRIMARY KEY (FUNCTIONING_DAY)
+                    SEASONS char (16),
+                    HOLIDAY char (16),
+                    FUNCTIONING_DAY char (20)
                    )",
                  errors = FALSE)
 
@@ -116,7 +113,7 @@ if(DF3 == -1){
   cat ("Table was createdd successfuly.\n")
 }
 
-sqlSave(conn,seoul_bike_sharing,'SEOULSHARING',append=TRUE, fast=FALSE, rownames=FALSE, colnames=FALSE, verbose=FALSE)
+#sqlSave(conn,seoul_bike_sharing,'seoulSharing',append=TRUE, fast=FALSE, rownames=FALSE, colnames=FALSE, verbose=FALSE)
 
 # 4th world_cities (1)
 
@@ -125,16 +122,17 @@ str(world_cities)
 dim(world_cities)
 View(world_cities)
 
-DF4 <- sqlQuery (conn, "CREATE TABLE world(CITY char (6)  NOT NULL, CITY_ASCII char (20),
+DF4 <- sqlQuery (conn, "CREATE TABLE world2(CITY char (50) NOT NULL,
+                    CITY_ASCII char (50),
                     LAT num (20),
                     LNG num (20),
-                    COUNTRY char (20),
-                    ISO2 char (20),
-                    ISO3 char (20),
-                    ADMIN_NAME char (20),
-                    CAPITAL char (20),
+                    COUNTRY char (50),
+                    ISO2 char (50),
+                    ISO3 char (50),
+                    ADMIN_NAME char (50),
+                    CAPITAL char (50),
                     POPULATION num (20),
-                    ID num (20),
+                    ID decimal (10),
                     PRIMARY KEY (CITY)
                    )",
                  errors = FALSE)
@@ -147,14 +145,14 @@ if(DF4 == -1){
   cat ("Table was createdd successfuly.\n")
 }
 
+#sqlSave(conn,world_cities,'world',append=TRUE, fast=FALSE, rownames=FALSE, colnames=FALSE, verbose=FALSE)
 
-# query 0 Determine how many records are in the seoul_bike_sharing dataset.¶
-fetch0 <- sqlFetch(conn, 'seoulSharing')
-tail(fetch0)
-dim(fetch0)
-fetch0
-sqlQuery(select humidity)
-info <- paste('select count (*) as total_of_records
-                from seoulSharing')
-query0 <- sqlQuery(conn, info, believeNRows = FALSE)
-query0
+# try query:
+weatherdb <- sqlFetch(conn, '')
+tail(weatherdb)
+dim(weatherdb)
+info<- paste('select HOUR
+               from SEOUL1')
+query2 <- sqlQuery(conn, info, believeNRows = FALSE)
+query2
+head(query2)
